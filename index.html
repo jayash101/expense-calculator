@@ -6,6 +6,45 @@
     <title>Expense Calculator</title>
   </head>
   <body>
+    <header>
+      <h2 class="expense-heading">Expense Calculator</h2>
+
+      <form class="expense-form">
+        <section class="expense-input">
+          <label for="expense-item">Item Name</label>
+
+          <input type="text" id="expense-item" />
+        </section>
+
+        <section class="expense-input">
+          <label for="expense-amount">Amount</label>
+
+          <input type="text" id="expense-amount" />
+        </section>
+
+        <button class="add-expense">Add Expense</button>
+      </form>
+    </header>
+
+    <main>
+      <h3>Total Expense</h3>
+
+      <table class="expense-list">
+        <tr class="table-header">
+          <th>S.N.</th>
+          <th>Item</th>
+          <th>Amount</th>
+        </tr>
+
+      </table>
+
+      <section class="total-section">
+        <span>Total</span>
+
+        <input type="text" class="total-output" />
+      </section>
+    </main>
+
     <script type="module" src="./dist/app.js"></script>
   </body>
 </html>
