@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+
     <title>Expense Calculator</title>
   </head>
   <body>
@@ -29,18 +31,28 @@
     <main>
       <h3>Total Expense</h3>
 
-      <table class="expense-list">
-        <tr class="table-header">
-          <th>S.N.</th>
-          <th>Item</th>
-          <th>Amount</th>
-        </tr>
-      </table>
+      <section class="list-section">
+        <table class="expense-list">
+          <thead>
+            <tr class="table-header">
+              <th>S.N.</th>
+              <th>Item</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+
+          <tbody></tbody>
+        </table>
+      </section>
 
       <section class="total-section">
-        <span>Total: Rs.</span>
+        <section>
+          <span>Total: Rs.</span>
 
-        <input type="text" class="total-output" />
+          <input type="text" class="total-output" value="0" readonly />
+        </section>
+
+        <button class="clear">Remove All</button>
       </section>
     </main>
 

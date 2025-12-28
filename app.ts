@@ -22,7 +22,9 @@ const addExpenseBtn = document.querySelector(
   ".add-expense"
 ) as HTMLButtonElement;
 
-const expenseList = document.querySelector(".expense-list") as HTMLTableElement;
+const expenseList = document.querySelector(
+  ".expense-list tbody"
+) as HTMLTableElement;
 
 const expenseListHeader = document.querySelector(
   ".table-header"
@@ -32,9 +34,11 @@ const totalExpense = document.querySelector(
   ".total-output"
 ) as HTMLInputElement;
 
+const clearBtn = document.querySelector(".clear") as HTMLButtonElement;
+
 // Generate unique id
 const generateId = (): number => {
-  return new Date().getTime();
+  return Date.now();
 };
 
 // Validation logic
@@ -104,6 +108,14 @@ const calculateTotalExpenses = (expenses: ExpenseList): number => {
 
 // UI logic
 const generateExpenseReceipt = (expenses: ExpenseList) => {
+  if (expenses.length <= 0) {
+    expenseListHeader.parentElement!.classList.add("data-empty");
+    return;
+  }
+
+  expenseListHeader.parentElement!.classList.remove("data-empty");
+  expenseList.innerHTML = "";
+
   for (let i = 0; i < expenses.length; i++) {
     // Loop all expense in expenses
     const expense: Expense = expenses[i];
@@ -128,7 +140,7 @@ const addExpense = async (): Promise<void> => {
   const name: string = itemName.value;
   const amount: number = Number(itemAmount.value);
 
-  console.log(name, amount);
+  // console.log(name, amount);
 
   try {
     await validateExpense(name, amount);
@@ -149,7 +161,7 @@ const addExpense = async (): Promise<void> => {
       throw new Error(result.message);
     }
 
-    console.log(result, "res");
+    // console.log(result, "res");
 
     generateExpenseReceipt(existingExpenses);
 
@@ -161,6 +173,25 @@ const addExpense = async (): Promise<void> => {
   }
 };
 
+// Remove logic
+const removeExpense = async (): Promise<void> => {
+  try {
+    const existingExpenses = await loadDataFromStorage();
+
+    if (!existingExpenses) {
+      throw new Error("List is already empty");
+    }
+
+    expenseListHeader.parentElement!.classList.add("data-empty");
+    expenseList.innerHTML = "";
+    totalExpense.value = "0";
+
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    console.error("Failed to add expense:", error);
+  }
+};
+
 // Events
 addExpenseBtn.addEventListener("click", (event) => {
   event.preventDefault();
@@ -168,13 +199,13 @@ addExpenseBtn.addEventListener("click", (event) => {
   addExpense().catch(console.error);
 });
 
+clearBtn.addEventListener("click", () => {
+  removeExpense().catch(console.error);
+});
+
 // Initialization
 const loadApp = async (): Promise<void> => {
   const expenses: ExpenseList = await loadDataFromStorage();
-
-  if (expenses.length <= 0) {
-    expenseList.innerHTML = "No data";
-  }
 
   generateExpenseReceipt(expenses);
 };
