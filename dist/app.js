@@ -8,7 +8,7 @@ const expenseListHeader = document.querySelector(".table-header");
 const totalExpense = document.querySelector(".total-output");
 // Generate unique id
 const generateId = () => {
-    return new Date().getTime();
+    return new Date().getTime(); 
 };
 // Validation logic
 const validateExpense = async (name, amount) => {
