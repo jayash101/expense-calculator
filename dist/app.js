@@ -1,7 +1,7 @@
 "use strict";
 const STORAGE_KEY = "expenses";
-const itemName = document.querySelector(".expense-input");
-const amount = document.querySelector(".expense-amount");
+const itemName = document.querySelector("#expense-item");
+const itemAmount = document.querySelector("#expense-amount");
 const addExpenseBtn = document.querySelector(".add-expense");
 const expenseList = document.querySelector(".expense-list");
 const expenseListHeader = document.querySelector(".table-header");
@@ -67,10 +67,6 @@ const calculateTotalExpenses = (expenses) => {
 };
 // UI logic
 const generateExpenseReceipt = (expenses) => {
-    expenseList.innerHTML = "";
-    if (expenses.length <= 0) {
-        expenseList.innerHTML = "No data";
-    }
     for (let i = 0; i < expenses.length; i++) {
         // Loop all expense in expenses
         const expense = expenses[i];
@@ -83,11 +79,49 @@ const generateExpenseReceipt = (expenses) => {
         expenseList.appendChild(expenseData);
     }
     const total = calculateTotalExpenses(expenses);
-    totalExpense.textContent = total.toString();
+    totalExpense.value = total.toString();
 };
+// Main logic
+const addExpense = async () => {
+    const name = itemName.value;
+    const amount = Number(itemAmount.value);
+    console.log(name, amount);
+    try {
+        await validateExpense(name, amount);
+        const existingExpenses = await loadDataFromStorage();
+        const newExpense = {
+            id: generateId().toString(),
+            name,
+            amount,
+        };
+        existingExpenses.push(newExpense);
+        const result = await saveDataToStorage(existingExpenses);
+        if (!result.success) {
+            throw new Error(result.message);
+        }
+        console.log(result, "res");
+        generateExpenseReceipt(existingExpenses);
+        itemName.value = "";
+        itemAmount.value = "";
+    }
+    catch (error) {
+        console.error("Failed to add expense:", error);
+        alert("Failed to add expense");
+    }
+};
+// Events
+addExpenseBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    addExpense().catch(console.error);
+});
 // Initialization
 const loadApp = async () => {
     const expenses = await loadDataFromStorage();
-    generateExpenseReceipt(expenses);
+    if (expenses.length <= 0) {
+        expenseList.innerHTML = "No data";
+    }
+    else {
+        generateExpenseReceipt(expenses);
+    }
 };
 loadApp().catch(console.error);
